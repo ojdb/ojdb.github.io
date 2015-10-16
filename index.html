@@ -1,1 +1,217 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Implicit Bezier curve rendering with three.js / webgl</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+      body {
+      color: #ffffff;
+      font-family:Courier;
+      font-size:12px;
+      text-align:center;
+
+      background-color: #000000;
+      margin: 0px;
+      overflow: hidden;
+      }
+
+      #info {
+      position: absolute;
+      top: 0px; width: 100%;
+      padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div id="container"></div>
+    
+    <script src="js/three.min.js"></script>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+      void main() {
+      gl_Position = vec4( position, 1.0 );
+      }
+    </script>
+
+    <script id="fragmentShader" type="x-shader/x-fragment">
+      uniform vec2 resolution;
+      uniform vec2 mouse;
+      uniform vec3 l03;
+      uniform vec3 l01;
+      uniform vec3 l12;
+      uniform vec3 l23;
+      uniform vec3 l02;
+      uniform vec3 l13;
+      uniform vec4 coefs;
+
+      vec3 ll = vec3(1.0,-1.0,0.0);
+      float eval(vec3 l, float x, float y) {
+        return l.x*x+l.y*y+l.z;
+      }
+
+      void main() {
+        float x = gl_FragCoord.x/resolution.y;
+        float y = gl_FragCoord.y/resolution.y;
+        float val2 = eval(l03,x,y)*eval(l03,x,y)-4.0*eval(l01,x,y)*eval(l23,x,y);
+      
+        float val3  = coefs.x * eval(l01,x,y)*eval(l12,x,y)*eval(l23,x,y);
+              val3 += coefs.y * eval(l01,x,y)*eval(l13,x,y)*eval(l13,x,y);
+              val3 += coefs.z * eval(l02,x,y)*eval(l02,x,y)*eval(l23,x,y);
+              val3 += coefs.w * eval(l03,x,y)*eval(l03,x,y)*eval(l03,x,y);
+
+        if (val3 < 0.0) gl_FragColor=vec4(1.0,1.0,0.0,0.0);
+        if ((mouse.x-x)*(mouse.x-x)+(mouse.y-y)*(mouse.y-y) - 0.005 < 0.0) gl_FragColor=vec4(1.0,1.0,1.0,0.0);
+      }
+    </script>
+
+    <script>
+
+      var supportsWebGL = ( function () { try { return !! window.WebGLRenderingContext && !! document.createElement( 'canvas' ).getContext( 'experimental-webgl' ); } catch( e ) { return false; } } )();
+
+      var container;
+
+      var mouse = new THREE.Vector2();
+
+      var camera, scene, renderer;
+
+      var uniforms;
+
+      var p0 = new THREE.Vector3(0.0, 0.0, 1.0);
+      var p1 = new THREE.Vector3(0.0, 1.0, 1.0);
+      var p2 = new THREE.Vector3(1.0, 1.0, 1.0);
+      var p3 = new THREE.Vector3(1.0, 0.0, 1.0);
+
+      init();
+      animate();
+
+      function init() {
+
+        container = document.getElementById( 'container' );
+
+        camera = new THREE.Camera();
+        camera.position.z = 1;
+
+        scene = new THREE.Scene();
+
+        var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+      
+        uniforms = {
+          l03: {type: "v3", value: new THREE.Vector3() },
+          l01: {type: "v3", value: new THREE.Vector3() },
+          l12: {type: "v3", value: new THREE.Vector3() },
+          l23: {type: "v3", value: new THREE.Vector3() },
+          l02: {type: "v3", value: new THREE.Vector3() },
+          l13: {type: "v3", value: new THREE.Vector3() },
+          coefs: {type: "v4", value: new THREE.Vector4() },
+          resolution: { type: "v2", value: new THREE.Vector2() },
+          mouse: {type: "v2", value: new THREE.Vector3() }
+        };
+
+        var material = new THREE.ShaderMaterial({
+          uniforms: uniforms,
+          vertexShader: document.getElementById( 'vertexShader' ).textContent,
+          fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+        });
+
+        var mesh = new THREE.Mesh( geometry, material );
+        scene.add( mesh );
+
+        renderer = new THREE.WebGLRenderer();
+        renderer.setPixelRatio( window.devicePixelRatio );
+        container.appendChild( renderer.domElement );
+
+        onWindowResize();
+
+        window.addEventListener( 'resize', onWindowResize, false );
+      
+        // For mouse interaction
+        renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
+        //renderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
+        //renderer.domElement.addEventListener( 'mouseup', onDocumentMouseUp, false );
+
+      }
+
+      // For keeping the coordinate system consistent
+      function onWindowResize( event ) {
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+        uniforms.resolution.value.x = renderer.domElement.width;
+        uniforms.resolution.value.y = renderer.domElement.height;
+      }
+      
+      function onDocumentMouseMove( event ) {
+        event.preventDefault();
+
+        mouse.x = ( event.clientX / window.innerHeight );
+        mouse.y = 1.0-( event.clientY / window.innerHeight );
+      
+        //var coor = "X coords: " + mouse.x + ", Y coords: " + mouse.y;
+        //document.getElementById("demo").innerHTML = coor;
+      
+        uniforms.mouse.value.x = mouse.x; 
+        uniforms.mouse.value.y = mouse.y;
+        
+        //window.alert(mouse.x);
+        //window.alert(mouse.y);
+      }
+
+      // Determinant
+      function det(a, b, c, d) {
+        return a * b - c * d;
+      }
+
+      // Lambda coefs
+      function lambda(p0,p1,p2) {
+        return det(p1.y,p2.x,p2.y,p1.x)-det(p0.y,p2.x,p2.y,p0.x)+det(p0.y,p1.x,p1.y,p0.x);
+      }
+
+      // Coefficients a,b,c of a line ax+by+c
+      function line(p, q) {
+        return new THREE.Vector3(det(p.y, 1.0, 1.0, q.y),
+                                -det(p.x, 1.0, 1.0, q.x),
+                                 det(p.x, q.y, p.y, q.x));
+      }
+
+      // Coefficients of basis functions
+      function compute_coefs(p0,p1,p2,p3) {
+        var l = new THREE.Vector4(lambda(p3,p2,p1), 
+                                  lambda(p2,p3,p0),
+                                  lambda(p1,p0,p3),
+                                  lambda(p0,p1,p2));
+        // Weights 
+        var u = new THREE.Vector4(p0.z,3.0*p1.z,3.0*p2.z,p3.z); 
+
+        // Coefs
+        return new THREE.Vector4((u.y*u.z)/(u.x*u.w)-(l.y*l.z)*(l.x*l.w),
+                                 (l.y*l.y)/(l.x*l.z)-(u.y*u.y)/(u.x*u.z),
+                                 (l.z*l.z)/(l.y*l.w)-(u.z*u.z)/(u.y*u.w),
+                                 (l.x*l.w)/(l.y*l.z)-(u.x*u.w)/(u.y*u.z) );
+      }
+
+      // Animation
+      function animate() {
+        requestAnimationFrame( animate );
+     
+        // Lines to be evaluated on GPU
+        uniforms.l03.value = line(p0, p3);
+        uniforms.l01.value = line(p0, p1);
+        uniforms.l12.value = line(p1, p2);
+        uniforms.l23.value = line(p2, p3);
+        uniforms.l02.value = line(p0, p2);
+        uniforms.l13.value = line(p1, p3);
+  
+        // Coefficients
+        uniforms.coefs.value = compute_coefs(p0,p1,p2,p3);
+
+        render();
+      }
+      
+      function render() {
+        renderer.render( scene, camera );
+      }
+
+    </script>
+  </body>
+</html>
