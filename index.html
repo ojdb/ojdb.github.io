@@ -45,24 +45,32 @@
       uniform vec3 l02;
       uniform vec3 l13;
       uniform vec4 coefs;
+      uniform vec3 transform;
+      uniform int mindir;
 
-      vec3 ll = vec3(1.0,-1.0,0.0);
       float eval(vec3 l, float x, float y) {
         return l.x*x+l.y*y+l.z;
       }
 
       void main() {
-        float x = gl_FragCoord.x/resolution.y;
-        float y = gl_FragCoord.y/resolution.y;
-        float val2 = eval(l03,x,y)*eval(l03,x,y)-4.0*eval(l01,x,y)*eval(l23,x,y);
-      
+        float x = (mindir==1) ? 
+                  gl_FragCoord.x/resolution.x-0.5 : 
+                  (gl_FragCoord.x-0.5*resolution.x)/resolution.y;
+        float y = (mindir==1) ? 
+                  (gl_FragCoord.y-0.5*resolution.y)/resolution.x : 
+                  gl_FragCoord.y/resolution.y-0.5;
+        x *= transform.z;
+        y *= transform.z;
+        if (abs(x) < 0.002 || abs(y) < 0.002) gl_FragColor=vec4(0.5,0.5,0.5,0.0);
+
         float val3  = coefs.x * eval(l01,x,y)*eval(l12,x,y)*eval(l23,x,y);
               val3 += coefs.y * eval(l01,x,y)*eval(l13,x,y)*eval(l13,x,y);
               val3 += coefs.z * eval(l02,x,y)*eval(l02,x,y)*eval(l23,x,y);
               val3 += coefs.w * eval(l03,x,y)*eval(l03,x,y)*eval(l03,x,y);
 
         if (val3 < 0.0) gl_FragColor=vec4(1.0,1.0,0.0,0.0);
-        if ((mouse.x-x)*(mouse.x-x)+(mouse.y-y)*(mouse.y-y) - 0.005 < 0.0) gl_FragColor=vec4(1.0,1.0,1.0,0.0);
+        if ((mouse.x-x)*(mouse.x-x)+(mouse.y-y)*(mouse.y-y) - 0.002 < 0.0) gl_FragColor=vec4(1.0,1.0,1.0,0.0);      
+        //float val2 = eval(l03,x,y)*eval(l03,x,y)-4.0*eval(l01,x,y)*eval(l23,x,y);
       }
     </script>
 
@@ -78,10 +86,11 @@
 
       var uniforms;
 
-      var p0 = new THREE.Vector3(0.0, 0.0, 1.0);
+      var p0 = new THREE.Vector3(0.1, 0.5, 1.0);
       var p1 = new THREE.Vector3(0.0, 1.0, 1.0);
       var p2 = new THREE.Vector3(1.0, 1.0, 1.0);
       var p3 = new THREE.Vector3(1.0, 0.0, 1.0);
+      var transform = new THREE.Vector3(0.0,0.0,2.0);
 
       init();
       animate();
@@ -105,8 +114,10 @@
           l02: {type: "v3", value: new THREE.Vector3() },
           l13: {type: "v3", value: new THREE.Vector3() },
           coefs: {type: "v4", value: new THREE.Vector4() },
+          transform: {type: "v3", value: new THREE.Vector3() },
           resolution: { type: "v2", value: new THREE.Vector2() },
-          mouse: {type: "v2", value: new THREE.Vector3() }
+          mouse: {type: "v2", value: new THREE.Vector3() },
+          mindir: {type: "i", value: 0 }
         };
 
         var material = new THREE.ShaderMaterial({
@@ -128,8 +139,6 @@
       
         // For mouse interaction
         renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
-        //renderer.domElement.addEventListener( 'mousedown', onDocumentMouseDown, false );
-        //renderer.domElement.addEventListener( 'mouseup', onDocumentMouseUp, false );
 
       }
 
@@ -139,17 +148,24 @@
 
         uniforms.resolution.value.x = renderer.domElement.width;
         uniforms.resolution.value.y = renderer.domElement.height;
+        if (renderer.domElement.width < renderer.domElement.height) uniforms.mindir.value = 1;
+        else uniforms.mindir.value = 0;
       }
       
       function onDocumentMouseMove( event ) {
         event.preventDefault();
+        
+        if (window.innerWidth < window.innerHeight) {
+          mouse.x = event.clientX / window.innerWidth - 0.5;
+          mouse.y = (0.5*window.innerHeight-event.clientY)/window.innerWidth;
+        } else {
+          mouse.x = (event.clientX-0.5*window.innerWidth)/window.innerHeight;
+          mouse.y = 0.5 - event.clientY / window.innerHeight;
+        }
+      
+        mouse.x*=transform.z;
+        mouse.y*=transform.z;
 
-        mouse.x = ( event.clientX / window.innerHeight );
-        mouse.y = 1.0-( event.clientY / window.innerHeight );
-      
-        //var coor = "X coords: " + mouse.x + ", Y coords: " + mouse.y;
-        //document.getElementById("demo").innerHTML = coor;
-      
         uniforms.mouse.value.x = mouse.x; 
         uniforms.mouse.value.y = mouse.y;
         
@@ -204,6 +220,8 @@
   
         // Coefficients
         uniforms.coefs.value = compute_coefs(p0,p1,p2,p3);
+
+        uniforms.transform.value = transform;
 
         render();
       }
