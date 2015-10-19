@@ -273,11 +273,19 @@
         // Weights 
         var u = new THREE.Vector4(p0.z,3.0*p1.z,3.0*p2.z,p3.z); 
 
+        var U = u.x*u.y*u.z*u.w;
+        var L = l.x*l.y*l.z*l.w;
+
+return new THREE.Vector4(u.y*u.y*u.z*u.z*L-l.y*l.y*l.z*l.z*U,
+                         l.y*l.y*l.y*l.w*U-u.y*u.y*u.y*u.w*L,
+                         l.x*l.z*l.z*l.z*U-u.x*u.z*u.z*u.z*L,
+                         l.x*l.x*l.w*l.w*U-u.x*u.x*u.w*u.w*L);
+
         // Coefficients
-        return new THREE.Vector4((u.y*u.z)/(u.x*u.w)-(l.y*l.z)*(l.x*l.w),
+        /*return new THREE.Vector4((u.y*u.z)/(u.x*u.w)-(l.y*l.z)*(l.x*l.w),
                                  (l.y*l.y)/(l.x*l.z)-(u.y*u.y)/(u.x*u.z),
                                  (l.z*l.z)/(l.y*l.w)-(u.z*u.z)/(u.y*u.w),
-                                 (l.x*l.w)/(l.y*l.z)-(u.x*u.w)/(u.y*u.z) );
+                                 (l.x*l.w)/(l.y*l.z)-(u.x*u.w)/(u.y*u.z) );*/
       }
 
       // Animation
