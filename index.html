@@ -64,7 +64,6 @@
         y *= transform.z;
         x += transform.x;
         y += transform.y;
-        if (abs(x) < 0.002 || abs(y) < 0.002) gl_FragColor=vec4(0.5,0.5,0.5,0.0);
 
         float val3  = coefs.x * eval(l01,x,y)*eval(l12,x,y)*eval(l23,x,y);
               val3 += coefs.y * eval(l01,x,y)*eval(l13,x,y)*eval(l13,x,y);
@@ -87,19 +86,18 @@
       var drag_x = 0.0;
       var drag_y = 0.0;
 
-
       var camera, scene, renderer;
 
       var uniforms;
 
-      var p0 = new THREE.Vector3(0.1, 0.5, 1.0);
-      var p1 = new THREE.Vector3(0.0, 1.0, 1.0);
+      var p0 = new THREE.Vector3(-0.25, -0.25, 1.0);
+      var p1 = new THREE.Vector3(-1.0, 1.0, 1.0);
       var p2 = new THREE.Vector3(1.0, 1.0, 1.0);
-      var p3 = new THREE.Vector3(1.0, 0.0, 1.0);
+      var p3 = new THREE.Vector3(0.25, -0.25, 1.0);
       var transform = new THREE.Vector3(0.0,0.0,2.0);
-      var index = 4;
+      var index = 0;
       var u = new THREE.Vector4(p0.z,3.0*p1.z,3.0*p2.z,p3.z); 
-   
+ 
       init();
       animate();
 
@@ -137,7 +135,26 @@
         var mesh = new THREE.Mesh( geometry, material );
         scene.add( mesh );
 
-        renderer = new THREE.WebGLRenderer();
+        // Axes
+        var material3 = new THREE.LineBasicMaterial({
+	  color: 0x888888
+        });
+        var line_y0 = new THREE.Geometry();
+        line_y0.vertices.push(
+          new THREE.Vector3( -1, 0, 0 ),
+          new THREE.Vector3( 1, 0, 0 )
+        );
+        var line_x0 = new THREE.Geometry();
+        line_x0.vertices.push(
+          new THREE.Vector3( 0, -1, 0 ),
+          new THREE.Vector3( 0, 1, 0 )
+        );
+        var line1 = new THREE.Line( line_x0, material3 );
+        var line2 = new THREE.Line( line_y0, material3 );
+        scene.add( line1 );
+        scene.add( line2 );
+
+        renderer = new THREE.WebGLRenderer({ antialias: true }); //new THREE.WebGLRenderer();
         renderer.setPixelRatio( window.devicePixelRatio );
         container.appendChild( renderer.domElement );
 
@@ -214,8 +231,6 @@
             break;
           default: ;
         }
-        //window.alert(mouse.x);
-        //window.alert(mouse.y);
       }
 
     
@@ -276,10 +291,10 @@
         var U = u.x*u.y*u.z*u.w;
         var L = l.x*l.y*l.z*l.w;
 
-return new THREE.Vector4(u.y*u.y*u.z*u.z*L-l.y*l.y*l.z*l.z*U,
-                         l.y*l.y*l.y*l.w*U-u.y*u.y*u.y*u.w*L,
-                         l.x*l.z*l.z*l.z*U-u.x*u.z*u.z*u.z*L,
-                         l.x*l.x*l.w*l.w*U-u.x*u.x*u.w*u.w*L);
+        return new THREE.Vector4(u.y*u.y*u.z*u.z*L-l.y*l.y*l.z*l.z*U,
+                                 l.y*l.y*l.y*l.w*U-u.y*u.y*u.y*u.w*L,
+                                 l.x*l.z*l.z*l.z*U-u.x*u.z*u.z*u.z*L,
+                                 l.x*l.x*l.w*l.w*U-u.x*u.x*u.w*u.w*L);
 
         // Coefficients
         /*return new THREE.Vector4((u.y*u.z)/(u.x*u.w)-(l.y*l.z)*(l.x*l.w),
