@@ -242,10 +242,10 @@
         event.preventDefault();
         if (event.which == 90) transform.z /= 1.05; // z // zoom in
         if (event.which == 88) transform.z *= 1.05; // x // zoom out
-        if (event.which == 38) transform.y += 0.05; // up
-        if (event.which == 40) transform.y -= 0.05; // down
-        if (event.which == 37) transform.x -= 0.05; // left
-        if (event.which == 39) transform.x += 0.05; // right
+        if (event.which == 38) transform.y += 0.05*transform.z; // up
+        if (event.which == 40) transform.y -= 0.05*transform.z; // down
+        if (event.which == 37) transform.x -= 0.05*transform.z; // left
+        if (event.which == 39) transform.x += 0.05*transform.z; // right
         if (event.which == 81) p0.z += 0.1; // q
         if (event.which == 65) p0.z -= 0.1; // a
         if (event.which == 87) p1.z += 0.1; // w
