@@ -164,6 +164,8 @@
       
         // For mouse interaction
         document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+        document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+        //document.addEventListener( 'touchstart', onDocumentTouchStart, false );
         //document.addEventListener( 'mousedown', onDocumentMouseDown, false );
         //document.addEventListener( 'mouseup', onDocumentMouseUp, false );
 
@@ -185,7 +187,7 @@
       
       //function onDocumentMouseDown( event ) {
       //
-      //}  
+      //} 
 
       function onDocumentMouseMove( event ) {
         event.preventDefault();
@@ -231,7 +233,53 @@
             break;
           default: ;
         }
-      }
+      } 
+
+      function onDocumentTouchMove( event ) {
+        event.preventDefault();
+
+        drag_x = mouse.x;
+        drag_y = mouse.y;
+
+        if (window.innerWidth < window.innerHeight) {
+          mouse.x = event.clientX / window.innerWidth - 0.5;
+          mouse.y = (0.5*window.innerHeight-event.clientY)/window.innerWidth;
+        } else {
+          mouse.x = (event.clientX-0.5*window.innerWidth)/window.innerHeight;
+          mouse.y = 0.5 - event.clientY / window.innerHeight;
+        }
+      
+        mouse.x*=transform.z;
+        mouse.y*=transform.z;
+        mouse.x+=transform.x;
+        mouse.y+=transform.y;
+
+        drag_x -= mouse.x;
+        drag_y -= mouse.y;
+
+        uniforms.mouse.value.x = mouse.x; 
+        uniforms.mouse.value.y = mouse.y;
+
+	switch (index) {
+          case 0:
+            p0.x -= drag_x;
+            p0.y -= drag_y;
+            break;
+          case 1:
+            p1.x -= drag_x;
+            p1.y -= drag_y;
+            break;
+          case 2:
+            p2.x -= drag_x;
+            p2.y -= drag_y;
+            break;
+          case 3:
+            p3.x -= drag_x;
+            p3.y -= drag_y;
+            break;
+          default: ;
+        }
+      } 
 
     
       //function onDocumentMouseUp( event ) {
