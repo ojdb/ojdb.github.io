@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Implicit Bezier curve rendering with three.js / webgl</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+      body {
+      color: #ffffff;
+      font-family:Courier;
+      font-size:12px;
+      text-align:center;
+
+      background-color: #000000;
+      margin: 0px;
+      overflow: hidden;
+      }
+
+      #info {
+      position: absolute;
+      top: 0px; width: 100%;
+      padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div id="container"></div>
+    
+    <script src="../../js/three.min.js"></script>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+      void main() {
+      gl_Position = vec4( position, 1.0 );
+      }
+    </script>
+
+    <script id="fragmentShader" type="x-shader/x-fragment">
+      uniform vec2 resolution;
+      uniform vec2 mouse;
+      uniform vec3 l03;
+      uniform vec3 l01;
+      uniform vec3 l12;
+      uniform vec3 l23;
+      uniform vec3 l02;
+      uniform vec3 l13;
+      uniform vec4 coefs;
+      uniform vec3 transform;
+      uniform int mindir;
+
+      float eval(vec3 l, float x, float y) {
+        return l.x*x+l.y*y+l.z;
+      }
+
+      void main() {
+        // All transformations should be stored in transform
+        float x = (mindir==1) ? 
+                  gl_FragCoord.x/resolution.x-0.5 : 
+                  (gl_FragCoord.x-0.5*resolution.x)/resolution.y;
+        float y = (mindir==1) ? 
+                  (gl_FragCoord.y-0.5*resolution.y)/resolution.x : 
+                  gl_FragCoord.y/resolution.y-0.5;
+        x *= transform.z;
+        y *= transform.z;
+        x += transform.x;
+        y += transform.y;
+
+        float val3  = coefs.x * eval(l01,x,y)*eval(l12,x,y)*eval(l23,x,y);
+              val3 += coefs.y * eval(l01,x,y)*eval(l13,x,y)*eval(l13,x,y);
+              val3 += coefs.z * eval(l02,x,y)*eval(l02,x,y)*eval(l23,x,y);
+              val3 += coefs.w * eval(l03,x,y)*eval(l03,x,y)*eval(l03,x,y);
+
+        if (val3 < 0.0) gl_FragColor=vec4(1.0,1.0,0.0,0.0);
+        //if ((mouse.x-x)*(mouse.x-x)+(mouse.y-y)*(mouse.y-y) - 0.002 < 0.0) gl_FragColor=vec4(1.0,1.0,1.0,0.0);      
+        //float val2 = eval(l03,x,y)*eval(l03,x,y)-4.0*eval(l01,x,y)*eval(l23,x,y);
+      }
+    </script>
+
+    <script>
+
+      var supportsWebGL = ( function () { try { return !! window.WebGLRenderingContext && !! document.createElement( 'canvas' ).getContext( 'experimental-webgl' ); } catch( e ) { return false; } } )();
+
+      var container;
+
+      var mouse = new THREE.Vector2();
+      var drag_x = 0.0;
+      var drag_y = 0.0;
+
+      var camera, scene, renderer;
+
+      var uniforms;
+
+      var p0 = new THREE.Vector3(-0.25, -0.25, 1.0);
+      var p1 = new THREE.Vector3(-1.0, 1.0, 1.0);
+      var p2 = new THREE.Vector3(1.0, 1.0, 1.0);
+      var p3 = new THREE.Vector3(0.25, -0.25, 1.0);
+      var transform = new THREE.Vector3(0.0,0.0,2.0);
+      var index = 0;
+      var u = new THREE.Vector4(p0.z,3.0*p1.z,3.0*p2.z,p3.z); 
+ 
+      init();
+      animate();
+
+      function init() {
+
+        container = document.getElementById( 'container' );
+
+        camera = new THREE.Camera();
+        camera.position.z = 1;
+
+        scene = new THREE.Scene();
+
+        var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+      
+        uniforms = {
+          l03: {type: "v3", value: new THREE.Vector3() },
+          l01: {type: "v3", value: new THREE.Vector3() },
+          l12: {type: "v3", value: new THREE.Vector3() },
+          l23: {type: "v3", value: new THREE.Vector3() },
+          l02: {type: "v3", value: new THREE.Vector3() },
+          l13: {type: "v3", value: new THREE.Vector3() },
+          coefs: {type: "v4", value: new THREE.Vector4() },
+          transform: {type: "v3", value: new THREE.Vector3() },
+          resolution: { type: "v2", value: new THREE.Vector2() },
+          mouse: {type: "v2", value: new THREE.Vector3() },
+          mindir: {type: "i", value: 0 }
+        };
+
+        var material = new THREE.ShaderMaterial({
+          uniforms: uniforms,
+          vertexShader: document.getElementById( 'vertexShader' ).textContent,
+          fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+        });
+
+        var mesh = new THREE.Mesh( geometry, material );
+        scene.add( mesh );
+
+        // Axes
+        var material3 = new THREE.LineBasicMaterial({
+	  color: 0x888888
+        });
+        var line_y0 = new THREE.Geometry();
+        line_y0.vertices.push(
+          new THREE.Vector3( -1, 0, 0 ),
+          new THREE.Vector3( 1, 0, 0 )
+        );
+        var line_x0 = new THREE.Geometry();
+        line_x0.vertices.push(
+          new THREE.Vector3( 0, -1, 0 ),
+          new THREE.Vector3( 0, 1, 0 )
+        );
+        var line1 = new THREE.Line( line_x0, material3 );
+        var line2 = new THREE.Line( line_y0, material3 );
+        scene.add( line1 );
+        scene.add( line2 );
+
+        renderer = new THREE.WebGLRenderer({ antialias: true }); //new THREE.WebGLRenderer();
+        renderer.setPixelRatio( window.devicePixelRatio );
+        container.appendChild( renderer.domElement );
+
+        onWindowResize();
+
+        window.addEventListener( 'resize', onWindowResize, false );
+      
+        // For mouse interaction
+        document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+        document.addEventListener( 'touchmove', onDocumentTouchMove, false );
+        //document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+        //document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+        //document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+
+        // For keyboard interaction
+        document.addEventListener( 'keydown', onDocumentKeyDown, false );
+        
+
+      }
+
+      // For keeping the coordinate system consistent
+      function onWindowResize( event ) {
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+        uniforms.resolution.value.x = renderer.domElement.width;
+        uniforms.resolution.value.y = renderer.domElement.height;
+        if (renderer.domElement.width < renderer.domElement.height) uniforms.mindir.value = 1;
+        else uniforms.mindir.value = 0;
+      }
+      
+      //function onDocumentMouseDown( event ) {
+      //
+      //} 
+
+      function onDocumentMouseMove( event ) {
+        event.preventDefault();
+
+        drag_x = mouse.x;
+        drag_y = mouse.y;
+
+        if (window.innerWidth < window.innerHeight) {
+          mouse.x = event.clientX / window.innerWidth - 0.5;
+          mouse.y = (0.5*window.innerHeight-event.clientY)/window.innerWidth;
+        } else {
+          mouse.x = (event.clientX-0.5*window.innerWidth)/window.innerHeight;
+          mouse.y = 0.5 - event.clientY / window.innerHeight;
+        }
+      
+        mouse.x*=transform.z;
+        mouse.y*=transform.z;
+        mouse.x+=transform.x;
+        mouse.y+=transform.y;
+
+        drag_x -= mouse.x;
+        drag_y -= mouse.y;
+
+        uniforms.mouse.value.x = mouse.x; 
+        uniforms.mouse.value.y = mouse.y;
+
+	switch (index) {
+          case 0:
+            p0.x -= drag_x;
+            p0.y -= drag_y;
+            break;
+          case 1:
+            p1.x -= drag_x;
+            p1.y -= drag_y;
+            break;
+          case 2:
+            p2.x -= drag_x;
+            p2.y -= drag_y;
+            break;
+          case 3:
+            p3.x -= drag_x;
+            p3.y -= drag_y;
+            break;
+          default: ;
+        }
+      } 
+
+      function onDocumentTouchMove( event ) {
+        event.preventDefault();
+
+        drag_x = mouse.x;
+        drag_y = mouse.y;
+
+        if (window.innerWidth < window.innerHeight) {
+          mouse.x = event.clientX / window.innerWidth - 0.5;
+          mouse.y = (0.5*window.innerHeight-event.clientY)/window.innerWidth;
+        } else {
+          mouse.x = (event.clientX-0.5*window.innerWidth)/window.innerHeight;
+          mouse.y = 0.5 - event.clientY / window.innerHeight;
+        }
+      
+        mouse.x*=transform.z;
+        mouse.y*=transform.z;
+        mouse.x+=transform.x;
+        mouse.y+=transform.y;
+
+        drag_x -= mouse.x;
+        drag_y -= mouse.y;
+
+        uniforms.mouse.value.x = mouse.x; 
+        uniforms.mouse.value.y = mouse.y;
+
+	switch (index) {
+          case 0:
+            p0.x -= drag_x;
+            p0.y -= drag_y;
+            break;
+          case 1:
+            p1.x -= drag_x;
+            p1.y -= drag_y;
+            break;
+          case 2:
+            p2.x -= drag_x;
+            p2.y -= drag_y;
+            break;
+          case 3:
+            p3.x -= drag_x;
+            p3.y -= drag_y;
+            break;
+          default: ;
+        }
+      } 
+
+    
+      //function onDocumentMouseUp( event ) {
+      //
+      //}
+
+      function onDocumentKeyDown( event ){ 
+        event.preventDefault();
+        if (event.which == 90) transform.z /= 1.05; // z // zoom in
+        if (event.which == 88) transform.z *= 1.05; // x // zoom out
+        if (event.which == 38) transform.y += 0.05*transform.z; // up
+        if (event.which == 40) transform.y -= 0.05*transform.z; // down
+        if (event.which == 37) transform.x -= 0.05*transform.z; // left
+        if (event.which == 39) transform.x += 0.05*transform.z; // right
+        if (event.which == 81) p0.z += 0.1; // q
+        if (event.which == 65) p0.z -= 0.1; // a
+        if (event.which == 87) p1.z += 0.1; // w
+        if (event.which == 83) p1.z -= 0.1; // s
+        if (event.which == 69) p2.z += 0.1; // e
+        if (event.which == 68) p2.z -= 0.1; // d
+        if (event.which == 82) p3.z += 0.1; // r
+        if (event.which == 70) p3.z -= 0.1; // f
+        if (event.which == 48) index = 0; // 0
+        if (event.which == 49) index = 1; // 1
+        if (event.which == 50) index = 2; // 2
+        if (event.which == 51) index = 3; // 3
+        if (event.which == 52) index = 4; // 4
+        uniforms.transform.value.z = transform.z;
+      }
+
+      // Determinant
+      function det(a, b, c, d) {
+        return a * b - c * d;
+      }
+
+      // Lambda coefs
+      function lambda(p0,p1,p2) {
+        return det(p1.y,p2.x,p2.y,p1.x)-det(p0.y,p2.x,p2.y,p0.x)+det(p0.y,p1.x,p1.y,p0.x);
+      }
+
+      // Coefficients a,b,c of a line ax+by+c
+      function line(p, q) {
+        return new THREE.Vector3(det(p.y, 1.0, 1.0, q.y),
+                                -det(p.x, 1.0, 1.0, q.x),
+                                 det(p.x, q.y, p.y, q.x));
+      }
+
+      // Coefficients of basis functions
+      function compute_coefs(p0,p1,p2,p3) {
+        var l = new THREE.Vector4(lambda(p3,p2,p1), 
+                                  lambda(p2,p3,p0),
+                                  lambda(p1,p0,p3),
+                                  lambda(p0,p1,p2));
+        // Weights 
+        var u = new THREE.Vector4(p0.z,3.0*p1.z,3.0*p2.z,p3.z); 
+
+        // Coefficients
+        return new THREE.Vector4((u.y*u.z)/(u.x*u.w)-(l.y*l.z)/(l.x*l.w),
+                                 (l.y*l.y)/(l.x*l.z)-(u.y*u.y)/(u.x*u.z),
+                                 (l.z*l.z)/(l.y*l.w)-(u.z*u.z)/(u.y*u.w),
+                                 (l.x*l.w)/(l.y*l.z)-(u.x*u.w)/(u.y*u.z) );
+      }
+
+      // Animation
+      function animate() {
+        requestAnimationFrame( animate );
+     
+        // Lines to be evaluated on GPU
+        uniforms.l03.value = line(p0, p3);
+        uniforms.l01.value = line(p0, p1);
+        uniforms.l12.value = line(p1, p2);
+        uniforms.l23.value = line(p2, p3);
+        uniforms.l02.value = line(p0, p2);
+        uniforms.l13.value = line(p1, p3);
+  
+        // Coefficients
+        uniforms.coefs.value = compute_coefs(p0,p1,p2,p3);
+
+        uniforms.transform.value = transform;
+
+        render();
+      }
+      
+      function render() {
+        renderer.render( scene, camera );
+      }
+
+    </script>
+  </body>
+</html>

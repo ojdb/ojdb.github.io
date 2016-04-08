@@ -1,0 +1,5 @@
+**Approximate Implicitization of Triangular Bézier surfaces** 
+*SCCG '10 Proceedings of the 26th Spring Conference on Computer Graphics*, 2010,
+Pages 133-140, ACM New York, NY, USA  
+Oliver Barrowclough and Tor Dokken  
+[Publishers version](http://dx.doi.org/10.1145/1925059.1925084)  
