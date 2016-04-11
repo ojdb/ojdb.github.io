@@ -1,7 +1,6 @@
 ---
 layout: page
 title:  "Academic Papers"
-date:   2016-04-06 18:02:40 +0200
 categories: #
 ---
 This page contains a list of research papers published I have written or contributed to over the last few years. 
