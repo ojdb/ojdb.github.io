@@ -38,6 +38,7 @@
     <script id="fragmentShader" type="x-shader/x-fragment">
       uniform vec2 resolution;
       uniform vec2 mouse;
+      uniform vec3 control;
       uniform vec3 l03;
       uniform vec3 l01;
       uniform vec3 l12;
@@ -71,7 +72,7 @@
               val3 += coefs.w * eval(l03,x,y)*eval(l03,x,y)*eval(l03,x,y);
 
         if (val3 < 0.0) gl_FragColor=vec4(1.0,1.0,0.0,0.0);
-        //if ((mouse.x-x)*(mouse.x-x)+(mouse.y-y)*(mouse.y-y) - 0.002 < 0.0) gl_FragColor=vec4(1.0,1.0,1.0,0.0);      
+        if ((control.x-x)*(control.x-x)+(control.y-y)*(control.y-y) - 0.002 < 0.0) gl_FragColor=vec4(1.0,0.0,0.0,0.0);      
         //float val2 = eval(l03,x,y)*eval(l03,x,y)-4.0*eval(l01,x,y)*eval(l23,x,y);
       }
     </script>
@@ -119,6 +120,7 @@
           l23: {type: "v3", value: new THREE.Vector3() },
           l02: {type: "v3", value: new THREE.Vector3() },
           l13: {type: "v3", value: new THREE.Vector3() },
+          control: {type: "v3", value: new THREE.Vector3() },
           coefs: {type: "v4", value: new THREE.Vector4() },
           transform: {type: "v3", value: new THREE.Vector3() },
           resolution: { type: "v2", value: new THREE.Vector2() },
@@ -218,18 +220,22 @@
           case 0:
             p0.x -= drag_x;
             p0.y -= drag_y;
+            uniforms.control.value = p0;
             break;
           case 1:
             p1.x -= drag_x;
             p1.y -= drag_y;
+            uniforms.control.value = p1;
             break;
           case 2:
             p2.x -= drag_x;
             p2.y -= drag_y;
+            uniforms.control.value = p2;
             break;
           case 3:
             p3.x -= drag_x;
             p3.y -= drag_y;
+            uniforms.control.value = p3;
             break;
           default: ;
         }
@@ -288,26 +294,72 @@
 
       function onDocumentKeyDown( event ){ 
         event.preventDefault();
-        if (event.which == 90) transform.z /= 1.05; // z // zoom in
-        if (event.which == 88) transform.z *= 1.05; // x // zoom out
-        if (event.which == 38) transform.y += 0.05*transform.z; // up
-        if (event.which == 40) transform.y -= 0.05*transform.z; // down
-        if (event.which == 37) transform.x -= 0.05*transform.z; // left
-        if (event.which == 39) transform.x += 0.05*transform.z; // right
-        if (event.which == 81) p0.z += 0.1; // q
-        if (event.which == 65) p0.z -= 0.1; // a
-        if (event.which == 87) p1.z += 0.1; // w
-        if (event.which == 83) p1.z -= 0.1; // s
-        if (event.which == 69) p2.z += 0.1; // e
-        if (event.which == 68) p2.z -= 0.1; // d
-        if (event.which == 82) p3.z += 0.1; // r
-        if (event.which == 70) p3.z -= 0.1; // f
-        if (event.which == 48) index = 0; // 0
-        if (event.which == 49) index = 1; // 1
-        if (event.which == 50) index = 2; // 2
-        if (event.which == 51) index = 3; // 3
-        if (event.which == 52) index = 4; // 4
-        uniforms.transform.value.z = transform.z;
+        switch (event.which) {
+          case 90:
+            transform.z /= 1.05; // z // zoom in
+            break;
+          case 88:
+            transform.z *= 1.05; // x // zoom out
+            break;
+          case 38:
+            transform.y += 0.05*transform.z; // up
+            break;
+          case 40:
+            transform.y -= 0.05*transform.z; // down
+            break;
+          case 37:
+            transform.x -= 0.05*transform.z; // left
+            break;
+          case 39:
+            transform.x += 0.05*transform.z; // right
+            break;
+          case 81:
+            p0.z += 0.1; // q
+            break;
+          case 65:
+            p0.z -= 0.1; // a
+            break;
+          case 87: 
+            p1.z += 0.1; // w
+            break;
+          case 83:
+            p1.z -= 0.1; // s
+            break;
+          case 69:
+            p2.z += 0.1; // e
+            break;
+          case 68:
+            p2.z -= 0.1; // d
+            break;
+          case 82: 
+            p3.z += 0.1; // r
+            break;
+          case 70:
+            p3.z -= 0.1; // f
+            break;
+          case 49:
+            index = 0; // 0
+            uniforms.control.value = p0;
+            break;
+          case 50:
+            index = 1; // 1
+            uniforms.control.value = p1;
+            break;
+          case 51:
+            index = 2; // 2
+            uniforms.control.value = p2;
+            break;
+          case 52:
+            index = 3; // 3
+            uniforms.control.value = p3;
+            break;
+          case 53:
+            index = 4; // 4
+            uniforms.control.value = new THREE.Vector3(-10, -10, 1.0); // cheat
+            break;
+          default: ;
+          uniforms.transform.value.z = transform.z;
+        }
       }
 
       // Determinant
