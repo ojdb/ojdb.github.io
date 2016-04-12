@@ -3,12 +3,14 @@ layout: page
 title:  "Demonstrations"
 categories: #
 ---
-This page contains links to some scietific demonstrations based on the research papers.  [cubic][ojdb-demo-cubic]
+This page contains links to some scietific demonstrations based on the [research papers][ojdb-papers]. 
 
-
-You can find the source code at
+<img style="float: right;" src="./demonstrations/implicitcubic/implicitcubic.png" height="120">
+**A basis for the implicit representation of planar rational cubic Bézier curves**  
+[This][ojdb-demo-cubic] demonstration implements the method described in the above paper on the GPU using WebGL and Three.js. You can find the source code for this demonstration at
 {% include icon-github.html username="oliverjdb" %} /
 [implicitcubic](https://github.com/oliverjdb/oliverjdb.github.io/blob/master/demonstrations/implicitcubic/index.html)
 
 
 [ojdb-demo-cubic]:   ./demonstrations/implicitcubic/index.html
+[ojdb-papers]:       ./academic-papers.html
