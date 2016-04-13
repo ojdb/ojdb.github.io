@@ -7,7 +7,7 @@ This page contains links to some scietific demonstrations based on the [research
 
 [<img style="float: right;" 
 src="./demonstrations/implicitcubic/implicitcubic.png" 
-height="120">][ojdb-deno-cubic]
+height="120">][ojdb-demo-cubic]
 [**A basis for the implicit representation of planar rational cubic 
 Bézier curves**][ojdb-demo-cubic]  
 [This][ojdb-demo-cubic] demonstration implements the method 
