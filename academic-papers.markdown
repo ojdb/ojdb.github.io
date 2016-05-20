@@ -5,7 +5,7 @@ categories: #
 ---
 This page contains a list of research papers published I have written or contributed to over the last few years. 
 
-<img style="float: right;" src="./papers/stream.jpg" height="120">
+<img style="float: right;" src="./papers/stream.jpg" height="140">
 **Interactive Exploration of Big Scientific Data: New Representations and Techniques**  
 *IEEE Computer Graphics and Applications*, Volume 36, Issue 3, Pages 6–9, 2016  
 Jon M. Hjelmervik and Oliver J. D. Barrowclough  
@@ -54,10 +54,10 @@ Oliver J. D. Barrowclough and Tor Dokken
 
 <br><br>  
 
-$$\sum_{i=0}^\infty 1/N = \ldots$$
+[//]: # ($$\sum_{i=0}^\infty 1/N = \ldots$$)
 
-Check out the [demonstratrions][ojdb-demos] page.
+[//]: # (Check out the [demonstratrions][ojdb-demos] page.)
 
-[ojdb-home]:    http://www.ojdbarrowclough/
-[ojdb-papers]:  http://www.ojdbarrowclough/papers
-[ojdb-demos]:   http://www.ojdbarrowclough/demos
+[ojdb-home]:    http://www.ojdbarrowclough.com/
+[ojdb-papers]:  http://www.ojdbarrowclough.com/papers
+[ojdb-demos]:   http://www.ojdbarrowclough.com/demos
