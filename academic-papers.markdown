@@ -5,8 +5,10 @@ categories: #
 ---
 This page contains a list of research papers published I have written or contributed to over the last few years. 
 
+<br><br>
+
 <img style="float: right;" src="./papers/stream.jpg" height="140">
-**Interactive Exploration of Big Scientific Data: New Representations and Techniques**  
+**Interactive exploration of big scientific data: new representations and techniques**  
 *IEEE Computer Graphics and Applications*, Volume 36, Issue 3, Pages 6–9, 2016  
 Jon M. Hjelmervik and Oliver J. D. Barrowclough  
 [Publishers version](http://dx.doi.org/10.1109/MCG.2016.53)
@@ -30,15 +32,15 @@ Oliver J. D. Barrowclough
 <br><br>  
   
 <img style="float: right;" src="./papers/appimpteapot.jpg" height="120">
-**Approximate Implicitization Using Linear Algebra**  
-*Journal of Applied Mathematics*, Volume 2012, Article ID 293746, 25 pages, 2012
+**Approximate implicitization using linear algebra**  
+*Journal of Applied Mathematics*, Volume 2012, Article ID 293746, 25 pages, 2012  
 Oliver J. D. Barrowclough and Tor Dokken  
 [Publishers version](http://dx.doi.org/10.1155/2012/293746) (Open Access)
 
 <br><br>
 
 <img style="float: right;" src="./papers/envapp_small.png" height="120">
-**Fast Approximate Implicitization of Envelope Curves Using Chebyshev Polynomials**  
+**Fast Approximate implicitization of envelope curves using Chebyshev polynomials**  
 *Latest Advances in Robot Kinematics*, Pages 205-212, 2012  
 Oliver J. D. Barrowclough, Tino Schultz and Bert Jüttler  
 [Publishers version](http://dx.doi.org/10.1007/978-94-007-4620-6_26)
@@ -46,9 +48,8 @@ Oliver J. D. Barrowclough, Tino Schultz and Bert Jüttler
 <br><br>
 
 <img style="float: right;" src="./papers/appimptri_small.png" height="120">
-**Approximate Implicitization of Triangular Bézier surfaces**  
-*SCCG '10 Proceedings of the 26th Spring Conference on Computer Graphics*, 2010,
-Pages 133-140, ACM New York, NY, USA  
+**Approximate implicitization of triangular Bézier surfaces**  
+*SCCG '10 Proceedings of the 26th Spring Conference on Computer Graphics*, Pages 133-140, ACM New York, NY, USA, 2010  
 Oliver J. D. Barrowclough and Tor Dokken  
 [Publishers version](http://dx.doi.org/10.1145/1925059.1925084)  
 
