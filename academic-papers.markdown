@@ -28,6 +28,7 @@ Vibeke Skytt, Oliver J. D. Barrowclough and Tor Dokken
 *Computer Aided Geometric Design*, Volume 31, Issues 3–4, Pages 148–167, 2014  
 Oliver J. D. Barrowclough  
 [Publishers version](http://dx.doi.org/10.1016/j.cagd.2014.02.007)
+[arXiv version](http://arxiv.org/abs/1605.08669)  
   
 <br><br>  
   
@@ -36,7 +37,8 @@ Oliver J. D. Barrowclough
 *Journal of Applied Mathematics*, Volume 2012, Article ID 293746, 25 pages, 2012  
 Oliver J. D. Barrowclough and Tor Dokken  
 [Publishers version](http://dx.doi.org/10.1155/2012/293746) (Open Access)
-
+[arXiv version](http://arxiv.org/abs/1605.08638)  
+  
 <br><br>
 
 <img style="float: right;" src="./papers/envapp_small.png" height="120">
