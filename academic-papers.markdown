@@ -27,16 +27,16 @@ Vibeke Skytt, Oliver J. D. Barrowclough and Tor Dokken
 **A basis for the implicit representation of planar rational cubic Bézier curves**  
 *Computer Aided Geometric Design*, Volume 31, Issues 3–4, Pages 148–167, 2014  
 Oliver J. D. Barrowclough  
-[Publishers version](http://dx.doi.org/10.1016/j.cagd.2014.02.007)
+[Publishers version](http://dx.doi.org/10.1016/j.cagd.2014.02.007)  
 [arXiv version](http://arxiv.org/abs/1605.08669)  
   
 <br><br>  
   
 <img style="float: right;" src="./papers/appimpteapot.jpg" height="120">
 **Approximate implicitization using linear algebra**  
-*Journal of Applied Mathematics*, Volume 2012, Article ID 293746, 25 pages, 2012  
+*Journal of Applied Mathematics*, Volume 2012, Article ID 293746, 25 pages, 2012   
 Oliver J. D. Barrowclough and Tor Dokken  
-[Publishers version](http://dx.doi.org/10.1155/2012/293746) (Open Access)
+[Publishers version](http://dx.doi.org/10.1155/2012/293746) (Open Access)  
 [arXiv version](http://arxiv.org/abs/1605.08638)  
   
 <br><br>
