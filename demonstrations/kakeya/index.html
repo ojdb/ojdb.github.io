@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>Kahane's construction of a Kakeya set in 3D</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="../../js/three.min.js"></script>
+			<script>
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			// For keyboard interaction
+			//document.addEventListener( 'keydown', onDocumentKeyDown, false );
+			
+			var K = new THREE.Geometry();
+
+            K.vertices.push(
+               new THREE.Vector3(-4,-4,0), 
+               new THREE.Vector3(4,-4,0),
+               new THREE.Vector3(4,4,0), 
+               new THREE.Vector3(-4,4,0), 
+               new THREE.Vector3(-2,-2,6), 
+               new THREE.Vector3(2,-2,6),
+               new THREE.Vector3(2,2,6),
+               new THREE.Vector3(-2,2,6)
+            );
+
+            K.faces.push(
+	             new THREE.Face3(2, 1, 0),
+ 	             new THREE.Face3(0, 3, 2),
+ 	             new THREE.Face3(0, 4, 7),
+	             new THREE.Face3(7, 3, 0),
+	             new THREE.Face3(0, 1, 5),
+	             new THREE.Face3(5, 4, 0),
+	             new THREE.Face3(1, 2, 6),
+	             new THREE.Face3(6, 5, 1),
+                 new THREE.Face3(2, 3, 7),
+                 new THREE.Face3(7, 6, 2),
+                 new THREE.Face3(4, 5, 6),
+                 new THREE.Face3(6, 7, 4)
+            );
+
+            var material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
+			//var material = new THREE.MeshNormalMaterial({wireframe: true});
+			
+
+			camera.position.y = 10;
+			var camdir = new THREE.Vector3( 0, 1, 0 );
+			camera.lookAt(camdir); 
+	        camera.rotation.z = Math.PI;
+	        camera.position.z = 3;
+			
+			var kahane = new THREE.Group();
+
+			var new_K = new THREE.Geometry();
+								
+			var scale = 0.25;
+			
+			var scale_shear = new THREE.Matrix4();
+			var translate = new THREE.Matrix4();
+			var m = new THREE.Matrix4();
+			
+			
+			for (var t0=-1; t0<2; t0+=2) {
+				var shearx0 = t0*0.25;
+				var shearx1 = t0*0.75;				
+				for (var t1=-1; t1<2; t1+=2) {
+					var sheary0 = t1*0.25;
+					var sheary1 = t1*0.75;
+					scale_shear.set( scale, 0, shearx0, 0, 0, scale, sheary0, 0, 0, 0, 1, 0, 0, 0, 0, 1 );
+					translate.set( 1, 0, 0, -3*t0, 0, 1, 0, -3*t1, 0, 0, 1, 0, 0, 0, 0, 1 );
+					m.multiplyMatrices(translate, scale_shear);
+					new_K.merge(K,m);
+					scale_shear.set( scale, 0, shearx1, 0, 0, scale, sheary1, 0, 0, 0, 1, 0, 0, 0, 0, 1 );
+					translate.set( 1, 0, 0, -3*t0, 0, 1, 0, -3*t1, 0, 0, 1, 0, 0, 0, 0, 1 );
+					m.multiplyMatrices(translate, scale_shear);
+					new_K.merge(K,m);
+			    }
+			}
+
+            var mesh = new THREE.Mesh( new_K, material );
+			kahane.add(mesh);
+
+			scene.add(kahane);					
+			kahane.matrixAutoUpdate = false;
+
+			
+			
+
+				
+            /*
+			function onDocumentKeyDown( event ){ 
+				event.preventDefault();
+				switch (event.which) {
+					case 90:
+					K = new_K; // z 
+					var new_K = new THREE.Geometry();
+					iterate();
+					break;
+					default: ;
+				}
+			}*/
+
+			var rotz = 0;
+			var render = function () {
+				requestAnimationFrame( render );
+         		        //camera.rotation.z = rotz;
+         		 
+				rotz += 0.01;
+				var crotz = Math.cos(rotz);
+				var srotz = Math.sin(rotz);
+     			kahane.matrix.set( crotz, -srotz, 0, 0, srotz, crotz, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 );
+				//cube1.rotation.x += 0.01;
+				//cube1.rotation.z += 0.01;
+				//cube1.updateMatrix();
+				renderer.render(scene, camera);
+			};
+
+			render();
+		</script>
+	</body>
+</html>
