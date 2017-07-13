@@ -7,6 +7,14 @@ This page contains a list of research papers published I have written or contrib
 
 <br><br>
 
+<img style="float: right;" src="./papers/mrbrain.png" height="150">
+**Direct interactive visualization of locally refined spline volumes for scalar and vector fields**  
+*Submitted*, 2017  
+Franz G. Fuchs, Oliver J. D. Barrowclough, Jon M. Hjelmervik, Heidi E. I. Dahl  
+[arXiv version](https://arxiv.org/abs/1707.01170)
+
+<br><br>
+
 <img style="float: right;" src="./papers/stream.jpg" height="140">
 **Interactive exploration of big scientific data: new representations and techniques**  
 *IEEE Computer Graphics and Applications*, Volume 36, Issue 3, Pages 6–9, 2016  
@@ -22,6 +30,15 @@ Vibeke Skytt, Oliver J. D. Barrowclough and Tor Dokken
 [Publishers version](http://dx.doi.org/10.1016/j.cag.2015.03.006)
   
 <br><br>
+
+<img style="float: right;" src="./papers/numerical_methods_imp.png" height="120">
+**Numerical methods for implicitisation and their applications**  
+*In book: SAGA – Advances in ShApes, Geometry, and Algebra*,  
+Editors: Tor Dokken, Georg Muntingh, Springer International Publishing, Pages 11-37.  
+Oliver J. D. Barrowclough  
+[Publishers version](http://dx.doi.org/10.1007/978-3-319-08635-4_2)  
+  
+<br><br>  
   
 <img style="float: right;" src="./papers/implicitcubic.gif" height="120">
 **A basis for the implicit representation of planar rational cubic Bézier curves**  
@@ -46,6 +63,7 @@ Oliver J. D. Barrowclough and Tor Dokken
 *Latest Advances in Robot Kinematics*, Pages 205-212, 2012  
 Oliver J. D. Barrowclough, Tino Schultz and Bert Jüttler  
 [Publishers version](http://dx.doi.org/10.1007/978-94-007-4620-6_26)
+[arXiv version](https://arxiv.org/abs/1707.01229)
 
 <br><br>
 
@@ -54,6 +72,7 @@ Oliver J. D. Barrowclough, Tino Schultz and Bert Jüttler
 *SCCG '10 Proceedings of the 26th Spring Conference on Computer Graphics*, Pages 133-140, ACM New York, NY, USA, 2010  
 Oliver J. D. Barrowclough and Tor Dokken  
 [Publishers version](http://dx.doi.org/10.1145/1925059.1925084)  
+[arXiv version](https://arxiv.org/abs/1707.01255)
 
 <br><br>  
 
