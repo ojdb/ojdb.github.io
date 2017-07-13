@@ -62,7 +62,7 @@ Oliver J. D. Barrowclough and Tor Dokken
 **Fast Approximate implicitization of envelope curves using Chebyshev polynomials**  
 *Latest Advances in Robot Kinematics*, Pages 205-212, 2012  
 Oliver J. D. Barrowclough, Tino Schultz and Bert Jüttler  
-[Publishers version](http://dx.doi.org/10.1007/978-94-007-4620-6_26)
+[Publishers version](http://dx.doi.org/10.1007/978-94-007-4620-6_26)  
 [arXiv version](https://arxiv.org/abs/1707.01229)
 
 <br><br>
