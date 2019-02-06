@@ -7,14 +7,14 @@ This page contains a list of research papers published I have written or contrib
 
 <br><br>
 
-<img style="float: right;" src="./papers/demfill.png" height="140">
+<img style="float: right;" src="./papers/demfill.png" height="130">
 **Void filling of digital elevation models with deep generative models**  
 *Submitted*, 2018  
 Konstantinos Gavriil, Georg Muntingh, Oliver J. D. Barrowclough  
 [arXiv version](https://arxiv.org/abs/1811.12693)
 <br><br>
 
-<img style="float: right;" src="./papers/gear.png" height="110">
+<img style="float: right;" src="./papers/gear.png" height="115">
 **Reverse engineering of CAD models via clustering and approximate implicitization**  
 *Submitted*, 2018  
 Andrea Raffo, Oliver J. D. Barrowclough, Georg Muntingh  
