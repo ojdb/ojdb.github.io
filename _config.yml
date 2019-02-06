@@ -14,7 +14,7 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://www.ojdbarrowclough.com" # the base hostname & protocol for your site
 rg-url: "https://www.researchgate.net/profile/Oliver_Barrowclough/"
 
-#twitter_username: 
+twitter_username:  oliverjdb
 github_username:  oliverjdb
 
 # Build settings
