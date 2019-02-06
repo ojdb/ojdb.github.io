@@ -17,7 +17,7 @@ Konstantinos Gavriil, Georg Muntingh, Oliver J. D. Barrowclough
 <img style="float: right;" src="./papers/gear.png" height="150">
 **Reverse engineering of CAD models via clustering and approximate implicitization**  
 *Submitted*, 2018  
-Andrea Raffo, Oliver J. D. Barrowclough, Georg Muntingh 
+Andrea Raffo, Oliver J. D. Barrowclough, Georg Muntingh  
 [arXiv version](https://arxiv.org/abs/1810.07451)
 <br><br>
 
