@@ -19,6 +19,15 @@ Konstantinos Gavriil, Georg Muntingh, Oliver J. D. Barrowclough
 *Submitted*, 2018  
 Andrea Raffo, Oliver J. D. Barrowclough, Georg Muntingh  
 [arXiv version](https://arxiv.org/abs/1810.07451)
+
+<br><br>
+
+<img style="float: right;" src="./papers/tri_am.jpg" height="140">
+**Trivariate spline representations for computer aided design and additive manufacturing**  
+*Computers & Mathematics with Applications*, 2018  
+Tor Dokken, Vibeke Skytt and Oliver J. D. Barrowclough  
+[Publishers version](https://doi.org/10.1016/j.camwa.2018.08.017)
+
 <br><br>
 
 <img style="float: right;" src="./papers/mrbrain.png" height="150">
