@@ -30,7 +30,7 @@ Lorenzo Tamellini, Michele Chiumenti, Christian Altenhofen, Marco Attene, Oliver
 **Void filling of digital elevation models with deep generative models**  
 *IEEE Geoscience and Remote Sensing Letters (GRSL)*, 2018  
 Konstantinos Gavriil, Georg Muntingh, Oliver J. D. Barrowclough  
-[Publisher's version] (https://doi.org/10.1109/LGRS.2019.2902222)
+[Publisher's version](https://doi.org/10.1109/LGRS.2019.2902222)  
 [arXiv version](https://arxiv.org/abs/1811.12693)
 <br><br>
 
