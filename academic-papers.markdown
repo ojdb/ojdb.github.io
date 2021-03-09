@@ -4,13 +4,22 @@ title:  "Academic Papers"
 categories: #
 ---
 This page contains a list of research papers published I have written or contributed to over the last few years. 
+<br><br>
+
+<img style="float: right;" src="./papers/CT-and-distance-field-2D.png" height="130">
+**Binary segmentation of medical images\\ using implicit spline representations and deep learning**  
+*Computer Aided Geometric Design (accepted)*, 2021  
+Oliver J. D. Barrowclough, Georg Muntingh, Varatharajan Nainamalai, Ivar Stangeby  
+[arXiv version](https://arxiv.org/abs/2102.12759)
+<br><br>
 
 <br><br>
 
 <img style="float: right;" src="./papers/sesar.png" height="130">
 **Real-time processing of high resolution video and 3D model-based tracking in remote tower operations**  
-*Submitted*, 2019  
+*SN Computer Science*, 2019  
 Oliver J. D. Barrowclough, Sverre Briseid, Georg Muntingh, Torbjørn Viksand  
+[Publisher's version](https://doi.org/10.1007/s42979-020-00304-x)  
 [arXiv version](https://arxiv.org/abs/1910.03517)
 <br><br>
 
@@ -36,8 +45,9 @@ Konstantinos Gavriil, Georg Muntingh, Oliver J. D. Barrowclough
 
 <img style="float: right;" src="./papers/gear.png" height="115">
 **Reverse engineering of CAD models via clustering and approximate implicitization**  
-*Submitted*, 2018  
+*Computer Aided Geometric Design*, 2018  
 Andrea Raffo, Oliver J. D. Barrowclough, Georg Muntingh  
+[Publisher's version](https://doi.org/10.1016/j.cagd.2020.101876)  
 [arXiv version](https://arxiv.org/abs/1810.07451)
 
 <br><br>
