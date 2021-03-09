@@ -7,11 +7,19 @@ This page contains a list of research papers published I have written or contrib
 <br><br>
 
 <img style="float: right;" src="./papers/CT-and-distance-field-2D.png" height="130">
-**Binary segmentation of medical images\\ using implicit spline representations and deep learning**  
+**Binary segmentation of medical images using implicit spline representations and deep learning**  
 *Computer Aided Geometric Design (accepted)*, 2021  
 Oliver J. D. Barrowclough, Georg Muntingh, Varatharajan Nainamalai, Ivar Stangeby  
 [arXiv version](https://arxiv.org/abs/2102.12759)
+
 <br><br>
+
+<img style="float: right;" src="./papers/gear.png" height="115">
+**Reverse engineering of CAD models via clustering and approximate implicitization**  
+*Computer Aided Geometric Design*, 2020  
+Andrea Raffo, Oliver J. D. Barrowclough, Georg Muntingh  
+[Publisher's version](https://doi.org/10.1016/j.cagd.2020.101876)  
+[arXiv version](https://arxiv.org/abs/1810.07451)
 
 <br><br>
 
@@ -21,7 +29,6 @@ Oliver J. D. Barrowclough, Georg Muntingh, Varatharajan Nainamalai, Ivar Stangeb
 Oliver J. D. Barrowclough, Sverre Briseid, Georg Muntingh, Torbjørn Viksand  
 [Publisher's version](https://doi.org/10.1007/s42979-020-00304-x)  
 [arXiv version](https://arxiv.org/abs/1910.03517)
-<br><br>
 
 <br><br>
 
@@ -31,7 +38,6 @@ Oliver J. D. Barrowclough, Sverre Briseid, Georg Muntingh, Torbjørn Viksand
 Lorenzo Tamellini, Michele Chiumenti, Christian Altenhofen, Marco Attene, Oliver Barrowclough, Marco Livesu, Federico Marini, Massimiliano Martinelli, Vibeke Skytt  
 [Publisher's version](https://doi.org/10.1007/s11837-019-03886-x)  
 [arXiv version](https://arxiv.org/abs/1907.01370)
-<br><br>
 
 <br><br>
 
@@ -41,14 +47,6 @@ Lorenzo Tamellini, Michele Chiumenti, Christian Altenhofen, Marco Attene, Oliver
 Konstantinos Gavriil, Georg Muntingh, Oliver J. D. Barrowclough  
 [Publisher's version](https://doi.org/10.1109/LGRS.2019.2902222)  
 [arXiv version](https://arxiv.org/abs/1811.12693)
-<br><br>
-
-<img style="float: right;" src="./papers/gear.png" height="115">
-**Reverse engineering of CAD models via clustering and approximate implicitization**  
-*Computer Aided Geometric Design*, 2018  
-Andrea Raffo, Oliver J. D. Barrowclough, Georg Muntingh  
-[Publisher's version](https://doi.org/10.1016/j.cagd.2020.101876)  
-[arXiv version](https://arxiv.org/abs/1810.07451)
 
 <br><br>
 
