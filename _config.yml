@@ -7,7 +7,7 @@
 
 # Site settings
 title: Oliver Barrowclough
-email: ojdbarrowclough@gmail.com
+email: oliver.barrowclough@sintef.no
 description: > # this means to ignore newlines until "baseurl:"
   This is the homepage of Oliver Barrowclough. It collects some of my research interests and results, links to papers, demonstrations and more. 
 baseurl: "" # the subpath of your site, e.g. /blog
