@@ -8,7 +8,7 @@ This page contains a list of research papers published I have written or contrib
 
 <img style="float: right;" src="./papers/CT-and-distance-field-2D.png" height="130">
 **Binary segmentation of medical images using implicit spline representations and deep learning**  
-*Computer Aided Geometric Design (accepted)*, 2021  
+*Computer Aided Geometric Design*, 2021  
 Oliver J. D. Barrowclough, Georg Muntingh, Varatharajan Nainamalai, Ivar Stangeby  
 [arXiv version](https://arxiv.org/abs/2102.12759)
 
