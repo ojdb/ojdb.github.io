@@ -281,54 +281,87 @@
     }
 
     function getTouchPos(touch) {
-      var rect = renderer.domElement.getBoundingClientRect();
       return {
-        x: touch.clientX - rect.left,
-        y: touch.clientY - rect.top
+        x: touch.clientX,
+        y: touch.clientY
       };
     }
 
     function onDocumentTouchStart(event) {
+      event.preventDefault();
       if (event.touches.length === 1) {
         mouse_down = true;
-        const touch = getTouchPos(event.touches[0]);
-        tapStart = { time: Date.now(), x: touch.x, y: touch.y };
-        onDocumentMouseMove({ clientX: touch.x, clientY: touch.y, preventDefault: () => { } });
+        const touch = event.touches[0];
+        tapStart = { time: Date.now(), x: touch.clientX, y: touch.clientY };
+        onDocumentMouseMove({
+          clientX: touch.clientX,
+          clientY: touch.clientY,
+          preventDefault: () => { }
+        });
       }
     }
 
     function onDocumentTouchMove(event) {
+      event.preventDefault();
+
       if (event.touches.length === 1) {
-        const touch = getTouchPos(event.touches[0]);
-        onDocumentMouseMove({ clientX: touch.x, clientY: touch.y, preventDefault: () => { } });
+        const touch = event.touches[0];
+        onDocumentMouseMove({
+          clientX: touch.clientX,
+          clientY: touch.clientY,
+          preventDefault: () => { }
+        });
       } else if (event.touches.length === 2) {
         const dist = getDistance(event.touches[0], event.touches[1]);
+
         if (lastTouchDistance !== null) {
           const delta = dist - lastTouchDistance;
-          transform.z *= delta > 0 ? 0.98 : 1.02;
+          const zoomFactor = delta > 0 ? 1 / 1.05 : 1.05;
+          transform.z *= zoomFactor;
         }
+
         lastTouchDistance = dist;
       }
     }
 
     function onDocumentTouchEnd(event) {
+      event.preventDefault();
+
       mouse_down = false;
       if (event.touches.length < 2) lastTouchDistance = null;
 
       if (tapStart && Date.now() - tapStart.time < 300) {
-        const x = (tapStart.x / window.innerWidth - 0.5) * transform.z + transform.x;
-        const y = (0.5 - tapStart.y / window.innerHeight) * transform.z + transform.y;
+        // Convert tap coordinates to scene coordinates based on current transform
+        let x, y;
+
+        if (window.innerWidth < window.innerHeight) {
+          x = tapStart.x / window.innerWidth - 0.5;
+          y = (0.5 * window.innerHeight - tapStart.y) / window.innerWidth;
+        } else {
+          x = (tapStart.x - 0.5 * window.innerWidth) / window.innerHeight;
+          y = 0.5 - tapStart.y / window.innerHeight;
+        }
+
+        x = x * transform.z + transform.x;
+        y = y * transform.z + transform.y;
+
         const tap = new THREE.Vector2(x, y);
         const points = [p0, p1, p2, p3];
+
+        // Scale selection threshold based on zoom level
+        const threshold = 0.05 * (2.0 / transform.z);
+
         let minDist = Infinity;
         let selected = -1;
+
         for (let i = 0; i < points.length; i++) {
           const dist = tap.distanceTo(new THREE.Vector2(points[i].x, points[i].y));
-          if (dist < 0.05 && dist < minDist) {
+          if (dist < threshold && dist < minDist) {
             minDist = dist;
             selected = i;
           }
         }
+
         if (selected !== -1) {
           index = selected;
           uniforms.control.value = points[selected];
