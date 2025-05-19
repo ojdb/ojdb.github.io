@@ -57,9 +57,6 @@
       }
 
       void main() {
-        // Set default background color
-        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
-        
         // All transformations should be stored in transform
         float x = (mindir==1) ? 
                   gl_FragCoord.x/resolution.x-0.5 : 
@@ -77,20 +74,13 @@
               val3 += coefs.z * eval(l02,x,y)*eval(l02,x,y)*eval(l23,x,y);
               val3 += coefs.w * eval(l03,x,y)*eval(l03,x,y)*eval(l03,x,y);
 
-        // Show the Bezier curve
-        if (val3 < 0.0) gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
-        
-        // Show the control point
-        if ((control.x-x)*(control.x-x)+(control.y-y)*(control.y-y) - 0.002 < 0.0) {
-            gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-        }
+        if (val3 < 0.0) gl_FragColor=vec4(1.0,1.0,0.0,0.0);
+        if ((control.x-x)*(control.x-x)+(control.y-y)*(control.y-y) - 0.002 < 0.0) gl_FragColor=vec4(1.0,0.0,0.0,0.0);      
+        //float val2 = eval(l03,x,y)*eval(l03,x,y)-4.0*eval(l01,x,y)*eval(l23,x,y);
       }
     </script>
 
   <script>
-    let lastTouchDistance = null;
-    let tapStart = null;
-    var controlPoints = [];
 
     var supportsWebGL = (function () { try { return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl'); } catch (e) { return false; } })();
 
@@ -117,9 +107,7 @@
     animate();
 
     function init() {
-      document.addEventListener('touchstart', onDocumentTouchStart, false);
-      document.addEventListener('touchmove', onDocumentTouchMove, false);
-      document.addEventListener('touchend', onDocumentTouchEnd, false);
+      
       container = document.getElementById('container');
 
       camera = new THREE.Camera();
@@ -171,18 +159,6 @@
       var line2 = new THREE.Line(line_y0, material3);
       scene.add(line1);
       scene.add(line2);
-      
-      // Add visible control points
-      const pointGeometry = new THREE.BufferGeometry();
-      pointGeometry.setFromPoints([new THREE.Vector3(0, 0, 0)]);
-      const pointMaterial = new THREE.PointsMaterial({ size: 0.02, color: 0xff0000 });
-      controlPoints = [
-        new THREE.Points(pointGeometry.clone(), pointMaterial.clone()),
-        new THREE.Points(pointGeometry.clone(), pointMaterial.clone()),
-        new THREE.Points(pointGeometry.clone(), pointMaterial.clone()),
-        new THREE.Points(pointGeometry.clone(), pointMaterial.clone())
-      ];
-      controlPoints.forEach(p => scene.add(p));
 
       renderer = new THREE.WebGLRenderer({ antialias: true }); //new THREE.WebGLRenderer();
       renderer.setPixelRatio(window.devicePixelRatio);
@@ -192,15 +168,18 @@
 
       window.addEventListener('resize', onWindowResize, false);
 
-      // For mouse interaction
+      // For mouse/touch interaction
       document.addEventListener('mousemove', onDocumentMouseMove, false);
-      //document.addEventListener( 'touchmove', onDocumentTouchMove, false );
-      //document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+      document.addEventListener('touchstart', onDocumentTouchStart, false);
+      document.addEventListener('touchmove', onDocumentTouchMove, false);
+      document.addEventListener('touchend', onDocumentTouchEnd, false);
       document.addEventListener('mousedown', onDocumentMouseDown, false);
       document.addEventListener('mouseup', onDocumentMouseUp, false);
 
       // For keyboard interaction
       document.addEventListener('keydown', onDocumentKeyDown, false);
+
+
     }
 
     // For keeping the coordinate system consistent
@@ -247,6 +226,7 @@
       uniforms.mouse.value.y = mouse.y;
 
       if (mouse_down) {
+
         switch (index) {
           case 0:
             p0.x -= drag_x;
@@ -273,99 +253,31 @@
       }
     }
 
-    function getDistance(t1, t2) {
-      return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
-    }
-
     function getTouchPos(touch) {
+      var rect = renderer.domElement.getBoundingClientRect();
       return {
-        x: touch.clientX,
-        y: touch.clientY
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top
       };
     }
 
     function onDocumentTouchStart(event) {
-      event.preventDefault();
-      
       if (event.touches.length === 1) {
         mouse_down = true;
-        const touch = event.touches[0];
-        tapStart = { time: Date.now(), x: touch.clientX, y: touch.clientY };
-        onDocumentMouseMove({ 
-          clientX: touch.clientX, 
-          clientY: touch.clientY, 
-          preventDefault: () => {} 
-        });
+        const touch = getTouchPos(event.touches[0]);
+        onDocumentMouseMove({ clientX: touch.x, clientY: touch.y, preventDefault: () => { } });
       }
     }
 
     function onDocumentTouchMove(event) {
-      event.preventDefault();
-      
       if (event.touches.length === 1) {
-        const touch = event.touches[0];
-        onDocumentMouseMove({ 
-          clientX: touch.clientX, 
-          clientY: touch.clientY, 
-          preventDefault: () => {} 
-        });
-      } else if (event.touches.length === 2) {
-        const dist = getDistance(event.touches[0], event.touches[1]);
-        
-        if (lastTouchDistance !== null) {
-          const zoomFactor = dist > lastTouchDistance ? 1/1.05 : 1.05;
-          transform.z *= zoomFactor;
-        }
-        
-        lastTouchDistance = dist;
+        const touch = getTouchPos(event.touches[0]);
+        onDocumentMouseMove({ clientX: touch.x, clientY: touch.y, preventDefault: () => { } });
       }
     }
 
     function onDocumentTouchEnd(event) {
-      event.preventDefault();
-      
       mouse_down = false;
-      if (event.touches.length < 2) lastTouchDistance = null;
-
-      if (tapStart && Date.now() - tapStart.time < 300) {
-        // Convert tap coordinates to scene coordinates based on current transform
-        let x, y;
-        
-        if (window.innerWidth < window.innerHeight) {
-          x = tapStart.x / window.innerWidth - 0.5;
-          y = (0.5 * window.innerHeight - tapStart.y) / window.innerWidth;
-        } else {
-          x = (tapStart.x - 0.5 * window.innerWidth) / window.innerHeight;
-          y = 0.5 - tapStart.y / window.innerHeight;
-        }
-        
-        x = x * transform.z + transform.x;
-        y = y * transform.z + transform.y;
-        
-        const tap = new THREE.Vector2(x, y);
-        const points = [p0, p1, p2, p3];
-        
-        // Scale selection threshold based on zoom level
-        const threshold = 0.05 * (2.0/transform.z);
-        
-        let minDist = Infinity;
-        let selected = -1;
-        
-        for (let i = 0; i < points.length; i++) {
-          const dist = tap.distanceTo(new THREE.Vector2(points[i].x, points[i].y));
-          if (dist < threshold && dist < minDist) {
-            minDist = dist;
-            selected = i;
-          }
-        }
-        
-        if (selected !== -1) {
-          index = selected;
-          uniforms.control.value = points[selected];
-        }
-      }
-
-      tapStart = null;
     }
 
     function onDocumentKeyDown(event) {
@@ -485,13 +397,6 @@
 
       // Coefficients
       uniforms.coefs.value = compute_coefs(p0, p1, p2, p3);
-      
-      // Update control point positions and colors
-      const positions = [p0, p1, p2, p3];
-      for (let i = 0; i < 4; i++) {
-        controlPoints[i].position.copy(positions[i]);
-        controlPoints[i].material.color.setHex(i === index ? 0xff0000 : 0x660000);
-      }
 
       uniforms.transform.value = transform;
 
