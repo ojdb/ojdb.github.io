@@ -84,6 +84,7 @@
 
     let lastTouchDistance = null;
     let tapStart = null;
+    var controlPoints = [];
 
     function getTouchPos(touch) {
       var rect = renderer.domElement.getBoundingClientRect();
@@ -178,7 +179,7 @@
       const pointGeometry = new THREE.BufferGeometry();
       pointGeometry.setFromPoints([new THREE.Vector3(0, 0, 0)]);
       const pointMaterial = new THREE.PointsMaterial({ size: 0.02, color: 0xff0000 });
-      const controlPoints = [
+      controlPoints = [
         new THREE.Points(pointGeometry.clone(), pointMaterial.clone()),
         new THREE.Points(pointGeometry.clone(), pointMaterial.clone()),
         new THREE.Points(pointGeometry.clone(), pointMaterial.clone()),
