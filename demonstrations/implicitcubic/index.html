@@ -82,6 +82,21 @@
 
   <script>
 
+    let lastTouchDistance = null;
+    let tapStart = null;
+
+    function getTouchPos(touch) {
+      var rect = renderer.domElement.getBoundingClientRect();
+      return {
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top
+      };
+    }
+
+    function getDistance(t1, t2) {
+      return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+    }
+
     var supportsWebGL = (function () { try { return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl'); } catch (e) { return false; } })();
 
     var container;
@@ -107,7 +122,7 @@
     animate();
 
     function init() {
-      
+
       container = document.getElementById('container');
 
       camera = new THREE.Camera();
@@ -159,6 +174,16 @@
       var line2 = new THREE.Line(line_y0, material3);
       scene.add(line1);
       scene.add(line2);
+      // colour the inactive points too
+      const pointGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0)]);
+      const pointMaterial = new THREE.PointsMaterial({ size: 0.02, color: 0xff0000 });
+      const controlPoints = [
+        new THREE.Points(pointGeometry.clone(), pointMaterial.clone()),
+        new THREE.Points(pointGeometry.clone(), pointMaterial.clone()),
+        new THREE.Points(pointGeometry.clone(), pointMaterial.clone()),
+        new THREE.Points(pointGeometry.clone(), pointMaterial.clone())
+      ];
+      controlPoints.forEach(p => scene.add(p));
 
       renderer = new THREE.WebGLRenderer({ antialias: true }); //new THREE.WebGLRenderer();
       renderer.setPixelRatio(window.devicePixelRatio);
@@ -265,6 +290,7 @@
       if (event.touches.length === 1) {
         mouse_down = true;
         const touch = getTouchPos(event.touches[0]);
+        tapStart = { time: Date.now(), x: touch.x, y: touch.y };
         onDocumentMouseMove({ clientX: touch.x, clientY: touch.y, preventDefault: () => { } });
       }
     }
@@ -273,11 +299,41 @@
       if (event.touches.length === 1) {
         const touch = getTouchPos(event.touches[0]);
         onDocumentMouseMove({ clientX: touch.x, clientY: touch.y, preventDefault: () => { } });
+      } else if (event.touches.length === 2) {
+        const dist = getDistance(event.touches[0], event.touches[1]);
+        if (lastTouchDistance !== null) {
+          const delta = dist - lastTouchDistance;
+          transform.z *= delta > 0 ? 0.98 : 1.02;
+        }
+        lastTouchDistance = dist;
       }
     }
 
     function onDocumentTouchEnd(event) {
       mouse_down = false;
+      if (event.touches.length < 2) lastTouchDistance = null;
+
+      if (tapStart && Date.now() - tapStart.time < 300) {
+        const x = (tapStart.x / window.innerWidth - 0.5) * transform.z + transform.x;
+        const y = (0.5 - tapStart.y / window.innerHeight) * transform.z + transform.y;
+        const tap = new THREE.Vector2(x, y);
+        const points = [p0, p1, p2, p3];
+        let minDist = Infinity;
+        let selected = -1;
+        for (let i = 0; i < points.length; i++) {
+          const dist = tap.distanceTo(new THREE.Vector2(points[i].x, points[i].y));
+          if (dist < 0.05 && dist < minDist) {
+            minDist = dist;
+            selected = i;
+          }
+        }
+        if (selected !== -1) {
+          index = selected;
+          uniforms.control.value = points[selected];
+        }
+      }
+
+      tapStart = null;
     }
 
     function onDocumentKeyDown(event) {
@@ -397,6 +453,13 @@
 
       // Coefficients
       uniforms.coefs.value = compute_coefs(p0, p1, p2, p3);
+
+      // Colour the control points
+      const positions = [p0, p1, p2, p3];
+      for (let i = 0; i < 4; i++) {
+        controlPoints[i].position.copy(positions[i]);
+        controlPoints[i].material.color.setHex(i === index ? 0xff0000 : 0x660000);
+      }
 
       uniforms.transform.value = transform;
 
