@@ -107,9 +107,7 @@
     animate();
 
     function init() {
-      document.addEventListener('touchstart', onDocumentTouchStart, false);
-      document.addEventListener('touchmove', onDocumentTouchMove, false);
-      document.addEventListener('touchend', onDocumentTouchEnd, false);
+      
       container = document.getElementById('container');
 
       camera = new THREE.Camera();
@@ -170,10 +168,11 @@
 
       window.addEventListener('resize', onWindowResize, false);
 
-      // For mouse interaction
+      // For mouse/touch interaction
       document.addEventListener('mousemove', onDocumentMouseMove, false);
-      //document.addEventListener( 'touchmove', onDocumentTouchMove, false );
-      //document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+      document.addEventListener('touchstart', onDocumentTouchStart, false);
+      document.addEventListener('touchmove', onDocumentTouchMove, false);
+      document.addEventListener('touchend', onDocumentTouchEnd, false);
       document.addEventListener('mousedown', onDocumentMouseDown, false);
       document.addEventListener('mouseup', onDocumentMouseUp, false);
 
