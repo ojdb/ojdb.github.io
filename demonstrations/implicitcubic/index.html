@@ -175,7 +175,8 @@
       scene.add(line1);
       scene.add(line2);
       // colour the inactive points too
-      const pointGeometry = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0)]);
+      const pointGeometry = new THREE.BufferGeometry();
+      pointGeometry.setFromPoints([new THREE.Vector3(0, 0, 0)]);
       const pointMaterial = new THREE.PointsMaterial({ size: 0.02, color: 0xff0000 });
       const controlPoints = [
         new THREE.Points(pointGeometry.clone(), pointMaterial.clone()),
